@@ -3,9 +3,15 @@
 {% block content %}
 
 <div class="container">
-    <h1>42 Coffee Cups Test Assignment</h1>
-    <hr>
+<h1>Django chat</h1>
+<hr>
 
+{% if user.is_authenticated %}
+    <a href="{% url 'logout' %}">logout</a>
+{% else %}
+    <a href="{% url 'login' %}">login</a>
+    <a href="{% url 'registration' %}">registration</a>
+{% endif %}
 
 </div>
 
