@@ -7,4 +7,4 @@ class Message(models.Model):
     datetime = models.DateTimeField(auto_created=True)
 
     def __unicode__(self):
-        return unicode('%s - %s' % (self.title, self.text[:15]))
+        return unicode('%s - %s' % (self.name, self.text[:15]))
