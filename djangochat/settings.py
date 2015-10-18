@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'apps.main',
+    'apps.main'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -96,4 +96,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
 
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/login'
+LOGIN_URL = '/login/'

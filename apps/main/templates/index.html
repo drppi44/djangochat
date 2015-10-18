@@ -3,35 +3,52 @@
 {% block extra_head %}
     {% load staticfiles %}
     <script src="{% static 'js/main.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/screen.css' %}" media="screen, projection"/>
+
 {% endblock %}
 
 {% block content %}
 
-<div class="container">
-<h1>Django chat</h1>
-<hr>
+  <div class="container">
+    <h1>Django chat</h1>
+    <hr>
+    <div class="btn-group" role="group">
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}?next=/" type="button" class="btn btn-default">logout</a>
 
-{% if user.is_authenticated %}
-    <a href="{% url 'logout' %}?next=/">logout</a>
+        {% else %}
+              <a type="button" class="btn btn-default" href="{% url 'login' %}">Login</a>
+              <a type="button" class="btn btn-default" href="{% url 'registration' %}">Registration</a>
+        {% endif %}
+    </div>
+    <hr>
 
-{% else %}
-    <a href="{% url 'login' %}">login</a>
-    <a href="{% url 'registration' %}">registration</a>
-{% endif %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <div class="chat" id="container"></div>
+                </div>
+                <div class="panel-footer">
+                    <div class="input-group">
+                        {% if user.is_authenticated %}
 
-<hr>
-<div id="container" style="overflow:scroll; height: 300px;"></div>
+                            <form id="message" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="text" id="id_name" name="name" class="form-control input-sm" placeholder="Type your Nickname here...">
+                                <textarea name="text" id="id_text" cols="30" rows="3"  class="form-control input-sm" placeholder="Type your message here..."></textarea>
+                                <input type="file" class="form-control input-sm" id="id_file" name="file">
+                                <input type="submit" value="message" class="btn btn-warning btn-sm">
+                            </form>
 
-{% if user.is_authenticated %}
-    <form id="message" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_ul }}
-        <input type="submit" value="message">
-    </form>
-
-{% endif %}
-
-
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 

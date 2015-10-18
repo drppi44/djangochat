@@ -38,6 +38,7 @@ def chat_add(request):
         form.save()
         return HttpResponse(json.dumps(dict(success=True)),
                             content_type='application/json')
+
     return HttpResponse(
         json.dumps(dict(success=False, error_msg='invalid form')),
         content_type='application/json'
