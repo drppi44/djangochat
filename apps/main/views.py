@@ -1,6 +1,7 @@
 import json
+
+from django.template.loader import render_to_string
 from .models import Message
-from django.core import serializers
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -32,7 +33,7 @@ def registration(request, template='registration/registration.html'):
 
 
 def chat_add(request):
-    form = MessageForm(request.POST)
+    form = MessageForm(request.POST, request.FILES)
     if form.is_valid():
         form.save()
         return HttpResponse(json.dumps(dict(success=True)),
@@ -44,7 +45,9 @@ def chat_add(request):
 
 
 def chat_get(request):
+    data = render_to_string('chat_content.html', dict(
+        messages=Message.objects.all(), user=request.user))
     return HttpResponse(
-        serializers.serialize('json', Message.objects.all()),
+        json.dumps(data),
         content_type='application/json'
     )

@@ -1,6 +1,6 @@
 import json
-from apps.main.models import Message
-from django.core import serializers
+from .models import Message
+from django.core.files.uploadedfile import SimpleUploadedFile
 from .forms import MessageForm
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -96,8 +96,36 @@ class ChatTest(TestCase):
     def test_chat_get(self):
         """get messages ajax returns messages"""
         response = self.client.get(reverse('chat-get'))
+        messages = Message.objects.all()
 
-        self.assertEquals(
-            serializers.serialize('json', Message.objects.all()),
-            response.content
-        )
+        for message in messages:
+            self.assertIn(message.name, response.content)
+            self.assertIn(message.text, response.content)
+
+    def test_chat_can_upload_files(self):
+        """add chat can uplod file"""
+        upload_file = open('requirements.txt', 'rb')
+        post_dict = {'name': 'Test Title', 'text': 'dasdas'}
+        file_dict = {
+            'file': SimpleUploadedFile(upload_file.name, upload_file.read())}
+        form = MessageForm(post_dict, file_dict)
+        self.assertTrue(form.is_valid())
+
+        self.client.post(reverse('chat-add'), dict(post_dict.items() +
+                                                   file_dict.items()))
+        message = Message.objects.last()
+
+        self.assertTrue(message.file)
+
+    def test_logged_in_user_can_see_uploaded_files(self):
+        """logged in user can see uploaded files"""
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(reverse('chat-get'))
+
+        self.assertIn('href', response.content)
+
+    def test_not_logged_in_user_cannot_see_uploaded_files(self):
+        """not logged in user can not see uploaded files"""
+        response = self.client.get(reverse('chat-get'))
+
+        self.assertNotIn('href', response.content)

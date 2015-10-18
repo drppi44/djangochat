@@ -1,0 +1,9 @@
+{% for message in messages %}
+<p>
+    <label>{{ message.name }}:</label>
+    {{ message.text }}
+    {% if user.is_authenticated and message.file %}
+        <br>file: <a href="{{ message.file.url }}">{{ message.filename }}</a>
+    {% endif %}
+</p>
+{% endfor %}

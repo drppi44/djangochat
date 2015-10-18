@@ -14,17 +14,24 @@
 {% if user.is_authenticated %}
     <a href="{% url 'logout' %}?next=/">logout</a>
 
-    <form id="message">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="message">
-    </form>
 {% else %}
     <a href="{% url 'login' %}">login</a>
     <a href="{% url 'registration' %}">registration</a>
 {% endif %}
-    <hr>
-    <textarea id="container" name="" id="" cols="30" rows="10"></textarea>
+
+<hr>
+<div id="container" style="overflow:scroll; height: 300px;"></div>
+
+{% if user.is_authenticated %}
+    <form id="message" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_ul }}
+        <input type="submit" value="message">
+    </form>
+
+{% endif %}
+
+
 </div>
 
 
