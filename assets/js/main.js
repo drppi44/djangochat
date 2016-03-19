@@ -1,4 +1,5 @@
 $(document).on('submit', 'form#message', function(){
+    var form = $(this);
     $.ajax({
         url: '/ajax/chat/add/',
         type: 'post',
@@ -6,6 +7,11 @@ $(document).on('submit', 'form#message', function(){
         data: new FormData(this),
         processData: false,
         contentType: false,
+        success: function(){
+            $(form).find('#id_text').val('');
+            var control = $("#id_file");
+            control.replaceWith( control = control.clone( true ) );
+        },
         error: function (err){
             console.log(err)
         }
