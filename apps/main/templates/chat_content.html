@@ -1,0 +1,20 @@
+{% for message in messages %}
+
+    <div class="left clearfix">
+        <div class="chat-body clearfix">
+            <div class="header">
+                <strong class="primary-font">{{ message.name }}</strong> <small class="pull-right text-muted">
+                <span class="glyphicon glyphicon-time"></span>{{ message.datetime|date:"Y-m-d H:i:s" }}</small>
+            </div>
+            <p>
+                {{ message.text }}
+
+                {% if user.is_authenticated and message.file %}
+                    <br>file: <a href="{{ message.file.url }}">{{ message.filename }}</a>
+                {% endif %}
+            </p>
+            <hr>
+        </div>
+    </div>
+
+{% endfor %}
