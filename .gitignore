@@ -1,19 +1,8 @@
 *.sqlite3
 *.pyc
-*.pyo
-*.swp
-*.swo
-*.swn
-*.esproj
 .idea
-htmlcov
-.Ds_Store
-*~
-git_ignore
-build
-.noseids
 *.dat
+uploads/
 .env
-.coverage
 .git
 
