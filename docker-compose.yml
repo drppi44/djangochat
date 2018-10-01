@@ -1,0 +1,15 @@
+web:
+  build: .
+  container_name: djangochat
+  command: python manage.py runserver 0.0.0.0:8000
+  volumes:
+    # format: external:internal[:mode]
+    - .:/djangochat
+  ports:
+    # format: external:internal (i.e. the world sees the external port)
+    - 8000:8000
+  links:
+    - db
+
+db:
+  image: postgres

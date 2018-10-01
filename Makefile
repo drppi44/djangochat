@@ -1,19 +1,28 @@
-MANAGE=django-admin.py
-SETTINGS=djangochat.settings
-
-test:
-	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=$(SETTINGS) $(MANAGE) test
-	flake8 --exclude '*migrations*' apps djangochat
-
-run:
-	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=$(SETTINGS) $(MANAGE) runserver
-
-syncdb:
-	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=$(SETTINGS) $(MANAGE) syncdb --noinput
+RUN_WEB=docker-compose run --rm web
+MANAGE=python manage.py
+DOCKER_PYTHON=$(RUN_WEB) $(MANAGE)
 
 migrate:
-	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=$(SETTINGS) $(MANAGE) migrate
+	$(DOCKER_PYTHON) migrate
 
-collectstatic:
-	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=$(SETTINGS) $(MANAGE) collectstatic --noinput
-.PHONY: test syncdb migrate
+makemigrations:
+	$(DOCKER_PYTHON) makemigrations
+
+shell:
+	$(DOCKER_PYTHON) shell_plus
+
+createsuperuser:
+	$(DOCKER_PYTHON) createsuperuser
+
+test:
+	$(DOCKER_PYTHON) test
+
+pip:
+	$(RUN_WEB) pip install -r requirements.txt
+
+build:
+	docker-compose build
+
+loaddata:
+	$(DOCKER_PYTHON) loaddata
+

@@ -1,4 +1,3 @@
-import json
 from .models import Message
 from django.core.files.uploadedfile import SimpleUploadedFile
 from .forms import MessageForm
@@ -27,15 +26,15 @@ class HomePageTest(TestCase):
         """home page has links to login and registrating pages"""
         response = self.client.get(reverse('home'))
 
-        self.assertIn('login', response.content)
-        self.assertIn('registration', response.content)
+        self.assertContains(response, 'login')
+        self.assertContains(response, 'registration')
 
     def test_home_page_has_logout_link(self):
         """home page has logout link if logged in"""
         self.client.login(username='admin', password='admin')
         response = self.client.get(reverse('home'))
 
-        self.assertIn('logout', response.content)
+        self.assertContains(response, 'logout')
 
 
 class AuthTest(TestCase):
@@ -60,19 +59,19 @@ class AuthTest(TestCase):
         response = self.client.get(reverse('login'))
 
         self.assertTrue(response.context['form'])
-        self.assertIn('form', response.content)
-        self.assertIn('id_username', response.content)
-        self.assertIn('id_password', response.content)
+        self.assertContains(response, 'form')
+        self.assertContains(response, 'id_username')
+        self.assertContains(response, 'id_password')
 
     def test_registration_page_has_login_form(self):
         """registration page has login form content, context"""
         response = self.client.get(reverse('registration'))
 
         self.assertTrue(response.context['form'])
-        self.assertIn('form', response.content)
-        self.assertIn('id_username', response.content)
-        self.assertIn('id_password1', response.content)
-        self.assertIn('id_password2', response.content)
+        self.assertContains(response, 'form')
+        self.assertContains(response, 'id_username')
+        self.assertContains(response, 'id_password1')
+        self.assertContains(response, 'id_password2')
 
 
 class ChatTest(TestCase):
@@ -85,13 +84,14 @@ class ChatTest(TestCase):
 
         self.client.login(username='admin', password='admin')
         response = self.client.post(reverse('chat-add'),
-                                    {'name': name, 'text': text})
+                                    {'name': name, 'text': text},
+                                    format='json')
 
         message = Message.objects.last()
 
         self.assertEquals(message.name, name)
         self.assertEquals(message.text, text)
-        self.assertEquals(json.loads(response.content), dict(success=True))
+        self.assertJSONEqual(response.content.decode("utf-8"), {'success': True})
 
     def test_chat_get(self):
         """get messages ajax returns messages"""
@@ -99,8 +99,8 @@ class ChatTest(TestCase):
         messages = Message.objects.all()
 
         for message in messages:
-            self.assertIn(message.name, response.content)
-            self.assertIn(message.text, response.content)
+            self.assertContains(response, message.name)
+            self.assertContains(response, message.text)
 
     def test_chat_can_upload_files(self):
         """add chat can uplod file"""
@@ -111,8 +111,8 @@ class ChatTest(TestCase):
         form = MessageForm(post_dict, file_dict)
         self.assertTrue(form.is_valid())
 
-        self.client.post(reverse('chat-add'), dict(post_dict.items() +
-                                                   file_dict.items()))
+        post_dict.update(file_dict)
+        self.client.post(reverse('chat-add'), post_dict)
         message = Message.objects.last()
 
         self.assertTrue(message.file)
@@ -122,10 +122,10 @@ class ChatTest(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.get(reverse('chat-get'))
 
-        self.assertIn('href', response.content)
+        self.assertContains(response, 'href')
 
     def test_not_logged_in_user_cannot_see_uploaded_files(self):
         """not logged in user can not see uploaded files"""
         response = self.client.get(reverse('chat-get'))
 
-        self.assertNotIn('href', response.content)
+        self.assertNotContains(response, 'href')

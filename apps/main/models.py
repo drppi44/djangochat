@@ -9,8 +9,8 @@ class Message(models.Model):
     datetime = models.DateTimeField(auto_created=True)
     file = models.FileField(upload_to='files/', null=True)
 
-    def __unicode__(self):
-        return unicode('%s - %s' % (self.name, self.text[:15]))
+    def __str__(self):
+        return '%s - %s' % (self.name, self.text[:15])
 
     @staticmethod
     def log_message(sender, instance, created, **kwargs):
@@ -19,5 +19,6 @@ class Message(models.Model):
 
     def filename(self):
         return os.path.basename(self.file.name)
+
 
 post_save.connect(Message.log_message, sender=Message)

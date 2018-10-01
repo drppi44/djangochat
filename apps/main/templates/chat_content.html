@@ -1,10 +1,13 @@
 {% for message in messages %}
 
-    <div class="left clearfix">
+    <div class="left clearfix js-message">
         <div class="chat-body clearfix">
             <div class="header">
-                <strong class="primary-font">{{ message.name }}</strong> <small class="pull-right text-muted">
-                <span class="glyphicon glyphicon-time"></span>{{ message.datetime|date:"Y-m-d H:i:s" }}</small>
+                <strong class="primary-font">{{ message.name }}</strong>
+                <small class="pull-right text-muted">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <span class="js-time">{{ message.datetime|date:"Y-m-d H:i:s" }}</span>
+                </small>
             </div>
             <p>
                 {{ message.text }}

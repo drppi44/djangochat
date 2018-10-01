@@ -45,10 +45,11 @@ def chat_add(request):
 
 
 def chat_get(request):
+    messages = Message.objects.all().order_by('-datetime')[:25]
     return HttpResponse(
         json.dumps(render_to_string(
             'chat_content.html',
-            {'messages': Message.objects.all(), 'user': request.user}
+            {'messages': reversed(messages), 'user': request.user}
         )),
         content_type='application/json'
     )
